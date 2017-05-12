@@ -1,18 +1,22 @@
-#!/bin/sh
+#!/bin/bash
 ### BEGIN INIT INFO
-# Provides:          <NAME>
+# Provides:          $(basename $0)
 # Required-Start:    $local_fs $network $named $time $syslog
 # Required-Stop:     $local_fs $network $named $time $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Description:       <DESCRIPTION>
+# Description:       $(basename $0)
 ### END INIT INFO
 
-SCRIPT="<COMMAND>"
-RUNAS=<USERNAME>
+# NOTE: assumes initscript is named same as service being started
+# "Provides" and "Description" above should be hardcoded for the service
 
-PIDFILE=/var/run/<NAME>.pid
-LOGFILE=/var/log/<NAME>.log
+SCRIPT="$(basename $0)"
+NAME=$SCRIPT
+RUNAS=root  # change to non-root user if necessary
+
+PIDFILE=/var/run/$SCRIPT.pid
+LOGFILE=/var/log/$SCRIPT.log
 
 start() {
   if [ -f $PIDFILE ] && [ -s $PIDFILE ] && kill -0 $(cat $PIDFILE); then
@@ -60,7 +64,7 @@ uninstall() {
 }
 
 status() {
-    printf "%-50s" "Checking <NAME>..."
+    printf "%-50s" "Checking $(basename $0)..."
     if [ -f $PIDFILE ] && [ -s $PIDFILE ]; then
         PID=$(cat $PIDFILE)
             if [ -z "$(ps axf | grep ${PID} | grep -v grep)" ]; then
